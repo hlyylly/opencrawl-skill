@@ -13,24 +13,7 @@ env:
 
 Use this skill to crawl any JavaScript-rendered webpage using **real Chrome browsers** from a distributed worker pool. Unlike headless browser solutions (Puppeteer/Playwright), OpenCrawl requires zero local browser installation — ideal for VPS and cloud environments.
 
-## Quick Start (use our public server)
-
-1. Visit **http://39.105.206.76:9877** and click "Register" to get a free API Key (100 credits included)
-2. Set environment variables:
-   ```
-   OPENCRAWL_API_KEY=ak_your_key_here
-   OPENCRAWL_API_URL=http://39.105.206.76:9877
-   ```
-3. Start crawling!
-
-## Self-hosted (deploy your own server)
-
-If you prefer to run your own OpenCrawl server, see the full deployment guide:
-**https://github.com/hlyylly/OpenCrawl**
-
-Then set `OPENCRAWL_API_URL` to your own server address.
-
----
+**Authentication:** Set `OPENCRAWL_API_KEY` (get one by registering at your OpenCrawl server dashboard) in your environment or `.env` file. Optionally set `OPENCRAWL_API_URL` (defaults to `http://localhost:9877`).
 
 **How it works:** Your request → OpenCrawl server → dispatched to a real Chrome browser worker → page rendered with full JavaScript → content extracted → uploaded to Cloudflare R2 → download URL returned to you.
 

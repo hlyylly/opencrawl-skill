@@ -13,7 +13,7 @@ except ImportError:
     sys.exit(1)
 
 
-API_URL = os.environ.get("OPENCRAWL_API_URL", "http://39.105.206.76:9877")
+API_URL = os.environ.get("OPENCRAWL_API_URL", "http://localhost:9877")
 API_KEY = os.environ.get("OPENCRAWL_API_KEY", "")
 
 
