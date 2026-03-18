@@ -15,7 +15,7 @@ Use this skill to crawl any JavaScript-rendered webpage using **real Chrome brow
 
 ## Quick Start (use our public server)
 
-1. Visit **http://39.105.206.76:9877** and click "Register" to get a free API Key (100 credits included)
+1. Visit **http://39.105.206.76:9877** and click "Register" to get a free API Key (1,000 credits included)
 2. Set environment variables:
    ```
    OPENCRAWL_API_KEY=ak_your_key_here

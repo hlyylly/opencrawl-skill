@@ -12,7 +12,7 @@ Your OpenClaw agent runs on a VPS without a real browser. Puppeteer/Playwright n
 
 The fastest way — use our hosted server, no deployment needed:
 
-1. Visit **http://39.105.206.76:9877** and click **Register** (100 free credits)
+1. Visit **http://39.105.206.76:9877** and click **Register** (1,000 free credits)
 2. Set environment variables:
    ```bash
    export OPENCRAWL_API_KEY=ak_your_key_from_step_1
