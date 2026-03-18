@@ -63,12 +63,33 @@ python3 {baseDir}/tools/crawl.py --url "https://example.com" --raw
 
 Optional flags:
 - `--selector ".css-selector"` — Extract only matching elements
+- `--mode lite` — Lite mode: no images/CSS, faster, 0.1 credit (default: full)
 - `--raw` — Output full JSON response instead of just the text content
 - `--timeout 60` — Custom timeout in seconds (default: 60)
 
 ---
 
-### 2. Check Balance
+### 2. Search (Brave Search API Compatible)
+
+Use this to search the web using multiple search engines (DuckDuckGo + Google + Bing + Baidu) through real Chrome browsers. Returns structured results compatible with Brave Search API format.
+
+**Command:**
+```bash
+python3 {baseDir}/tools/crawl.py --search "your search query"
+```
+
+**Examples:**
+```bash
+# Lite search — DuckDuckGo only (0.1 credit)
+python3 {baseDir}/tools/crawl.py --search "python web scraping"
+
+# Full search — 4 engines parallel (3 credits, 20-30 deduplicated results)
+python3 {baseDir}/tools/crawl.py --search "python web scraping" --mode full
+```
+
+---
+
+### 4. Check Balance
 
 Use this to check how many credits remain on the API key.
 
@@ -79,7 +100,7 @@ python3 {baseDir}/tools/crawl.py --balance
 
 ---
 
-### 3. Check Status
+### 5. Check Status
 
 Use this to check the OpenCrawl platform status — how many workers are online, tasks completed, etc.
 
@@ -94,11 +115,13 @@ python3 {baseDir}/tools/crawl.py --status
 
 | Action | Argument | Example |
 |--------|----------|---------|
-| Crawl page | `--url` | `python3 {baseDir}/tools/crawl.py --url "https://example.com"` |
-| Crawl with selector | `--url` + `--selector` | `python3 {baseDir}/tools/crawl.py --url "https://example.com" --selector ".main"` |
+| Crawl (full) | `--url` | `python3 {baseDir}/tools/crawl.py --url "https://example.com"` |
+| Crawl (lite) | `--url --mode lite` | `python3 {baseDir}/tools/crawl.py --url "https://example.com" --mode lite` |
+| Search (lite) | `--search` | `python3 {baseDir}/tools/crawl.py --search "python tutorial"` |
+| Search (full) | `--search --mode full` | `python3 {baseDir}/tools/crawl.py --search "python tutorial" --mode full` |
 | Check balance | `--balance` | `python3 {baseDir}/tools/crawl.py --balance` |
 | Check status | `--status` | `python3 {baseDir}/tools/crawl.py --status` |
 
-**Output:** Crawl → rendered page text (or JSON with `--raw`). Balance → JSON with credits info. Status → JSON with worker/task stats.
+**Output:** Crawl → rendered page text (or JSON with `--raw`). Search → JSON with `web.results[]` (Brave compatible). Balance → JSON. Status → JSON.
 
 **Requirements:** Python 3.8+, `requests` library. No browser installation needed.

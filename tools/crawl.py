@@ -23,12 +23,12 @@ def error_exit(msg):
     sys.exit(1)
 
 
-def crawl(url, selector=None, timeout=60, raw=False):
+def crawl(url, selector=None, timeout=60, raw=False, mode="full"):
     if not API_KEY:
         error_exit("OPENCRAWL_API_KEY environment variable not set")
 
     try:
-        body = {"url": url}
+        body = {"url": url, "mode": mode}
         if selector:
             body["selector"] = selector
 
@@ -73,6 +73,45 @@ def crawl(url, selector=None, timeout=60, raw=False):
         error_exit(f"Failed to download result: {e}")
 
 
+def search(query, mode="lite", raw=False):
+    if not API_KEY:
+        error_exit("OPENCRAWL_API_KEY environment variable not set")
+
+    try:
+        res = requests.post(
+            f"{API_URL}/api/search",
+            headers={
+                "Authorization": f"Bearer {API_KEY}",
+                "Content-Type": "application/json",
+            },
+            json={"q": query, "mode": mode},
+            timeout=60,
+        )
+        data = res.json()
+    except requests.Timeout:
+        error_exit("Search request timed out")
+    except requests.ConnectionError:
+        error_exit(f"Cannot connect to OpenCrawl server at {API_URL}")
+    except Exception as e:
+        error_exit(str(e))
+
+    if not res.ok or not data.get("success"):
+        error_exit(data.get("error") or data.get("detail") or f"HTTP {res.status_code}")
+
+    if raw:
+        json.dump(data, sys.stdout, ensure_ascii=False, indent=2)
+    else:
+        # 输出搜索结果
+        results = data.get("web", {}).get("results", [])
+        for r in results:
+            sys.stdout.write(f"[{r.get('source', '?')}] {r.get('title', '')}\n")
+            sys.stdout.write(f"  {r.get('url', '')}\n")
+            if r.get("description"):
+                sys.stdout.write(f"  {r['description']}\n")
+            sys.stdout.write("\n")
+    sys.stdout.write("\n")
+
+
 def check_balance():
     if not API_KEY:
         error_exit("OPENCRAWL_API_KEY environment variable not set")
@@ -108,7 +147,9 @@ def check_status():
 def main():
     parser = argparse.ArgumentParser(description="OpenCrawl — Distributed browser rendering")
     parser.add_argument("--url", help="URL to crawl")
+    parser.add_argument("--search", help="Search query (multi-engine)")
     parser.add_argument("--selector", help="CSS selector to extract specific elements")
+    parser.add_argument("--mode", default="full", choices=["lite", "full"], help="Mode: lite (fast, 0.1 credit) or full (complete, 1 credit)")
     parser.add_argument("--raw", action="store_true", help="Output raw JSON response")
     parser.add_argument("--timeout", type=int, default=60, help="Timeout in seconds (default: 60)")
     parser.add_argument("--balance", action="store_true", help="Check API key balance")
@@ -120,8 +161,10 @@ def main():
         check_balance()
     elif args.status:
         check_status()
+    elif args.search:
+        search(args.search, args.mode, args.raw)
     elif args.url:
-        crawl(args.url, args.selector, args.timeout, args.raw)
+        crawl(args.url, args.selector, args.timeout, args.raw, args.mode)
     else:
         parser.print_help()
         sys.exit(1)
